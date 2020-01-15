@@ -1,4 +1,4 @@
-FROM registry.camunda.cloud/camunda-bpm-platform-ee:tomcat-7.10.5
+FROM camunda/camunda-bpm-platform:tomcat-7.12.0
 # see: https://docs.camunda.org/manual/latest/installation/docker/
 
 # timezone
@@ -53,6 +53,8 @@ RUN rm -fr /camunda/webapps/ROOT \
    xmlstarlet edit --ps --inplace \
    --delete '//Connector[@protocol="AJP/1.3"]' \
    /camunda/conf/server.xml
+
+ADD camunda-bpm-graphql-0.3.0.war /camunda/webapps/camunda-graphql.war
 
 # TODO Configure LDAP
 
