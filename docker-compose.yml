@@ -25,7 +25,7 @@ services:
       - DB_PASSWORD=camunda
       - WAIT_FOR=postgres:5432
   graphql-engine:
-    image: hasura/graphql-engine:v1.0.0
+    image: hasura/graphql-engine:pull2395-7ea7f82c
     ports:
       - "9000:8080"
     depends_on:
