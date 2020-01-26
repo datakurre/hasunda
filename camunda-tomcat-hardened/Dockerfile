@@ -54,8 +54,8 @@ RUN rm -fr /camunda/webapps/ROOT \
    --delete '//Connector[@protocol="AJP/1.3"]' \
    /camunda/conf/server.xml
 
-#ADD camunda-bpm-graphql-0.3.0.war /camunda/webapps/camunda-graphql.war
-RUN wget https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions/org/camunda/bpm/extension/graphql/camunda-bpm-graphql/0.3.0/camunda-bpm-graphql-0.3.0.war -O /camunda/webapps/camunda-graphql.war
+ADD camunda-bpm-graphql-0.3.0.war /camunda/webapps/camunda-graphql.war
+# RUN wget https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions/org/camunda/bpm/extension/graphql/camunda-bpm-graphql/0.3.0/camunda-bpm-graphql-0.3.0.war -O /camunda/webapps/camunda-graphql.war
 
 # TODO Configure LDAP
 
