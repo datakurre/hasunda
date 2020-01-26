@@ -38,6 +38,14 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+  graphql-camunda-relay:
+    image: vimagick/webhook
+    ports:
+      - "9001:9000"
+    volumes:
+      - "./graphql-camunda-relay:/etc/webhook"
+    restart: always
+
 volumes:
   db_data:
 

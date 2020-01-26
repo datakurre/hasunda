@@ -1,0 +1,16 @@
+[
+  {
+    "id": "test",
+    "execute-command": "/etc/webhook/test.sh",
+    "command-working-directory": "/etc/webhook",
+    "incoming-payload-content-type": "application/json",
+    "include-command-output-in-response": true,
+    "pass-arguments-to-command":
+    [
+        {
+            "source": "payload",
+            "name": "event.data.new.businessKey"
+        }
+    ]
+  }
+]
