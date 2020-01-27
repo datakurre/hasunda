@@ -5,9 +5,10 @@ services:
     ports:
       - "5432:5432"
     environment:
+      - POSTGRES_MULTIPLE_DATABASES=hasunda
       - POSTGRES_DB=camunda
-      - POSTGRES_USER=camunda
-      - POSTGRES_PASSWORD=camunda
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -21,18 +22,18 @@ services:
     environment:
       - DB_DRIVER=org.postgresql.Driver
       - DB_URL=jdbc:postgresql://postgres:5432/camunda
-      - DB_USERNAME=camunda
-      - DB_PASSWORD=camunda
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
       - WAIT_FOR=postgres:5432
   graphql-engine:
-    image: hasura/graphql-engine:pull2395-7ea7f82c
+    image: hasura/graphql-engine:v1.1.0-beta.2
     ports:
       - "9000:8080"
     depends_on:
       - "postgres"
     restart: always
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://camunda:camunda@postgres:5432/camunda
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5432/hasunda
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
@@ -48,5 +49,3 @@ services:
 
 volumes:
   db_data:
-
-

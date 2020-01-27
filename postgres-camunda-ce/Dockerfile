@@ -18,3 +18,5 @@ COPY --from=source /camunda-engine-jar/org/camunda/bpm/engine/db/create/*.postgr
 COPY --from=source /camunda-engine-jar/org/camunda/bpm/engine/db/create/*.postgres.create.case.history.sql     /docker-entrypoint-initdb.d/05.case.history.sql
 COPY --from=source /camunda-engine-jar/org/camunda/bpm/engine/db/create/*.postgres.create.decision.engine.sql  /docker-entrypoint-initdb.d/06.decision.engine.sql
 COPY --from=source /camunda-engine-jar/org/camunda/bpm/engine/db/create/*.postgres.create.decision.history.sql /docker-entrypoint-initdb.d/07.decision.history.sql
+
+ADD create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/00.create.multiple.postgresql.databases.sh
