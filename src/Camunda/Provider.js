@@ -79,3 +79,20 @@ export default options => {
     }
   );
 };
+
+export const processDefinitionUserTaskProvider = {
+  getList: (resource, params) =>
+    new Promise((resolve, reject) => {
+      if (resource !== "processDefinitionUserTask") {
+        throw new Error(`Unknown resource ${resource}.`);
+      }
+    })
+  // getOne: (resource, params) => Promise,
+  // getMany: (resource, params) => Promise,
+  // getManyReference: (resource, params) => Promise,
+  // create: (resource, params) => Promise,
+  // update: (resource, params) => Promise,
+  // updateMany: (resource, params) => Promise,
+  // delete: (resource, params) => Promise,
+  // deleteMany: (resource, params) => Promise
+};
