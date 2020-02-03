@@ -1,4 +1,5 @@
 /node_modules/
-/.idea/
+.idea/
 *.log
 *.war
+target

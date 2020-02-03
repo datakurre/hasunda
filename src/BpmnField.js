@@ -1,15 +1,9 @@
 import React from "react";
-import FormBuilder from "react-form-builder2";
-import { useForm } from "react-final-form";
+import ReactBpmn from "react-bpmn";
 
-const FormBuilderInput = ({ id, record }) => {
-  const form = useForm();
-  return (
-    <FormBuilder.ReactFormBuilder
-      data={JSON.parse(record[id] || "[]")}
-      onPost={({ task_data }) => form.change(id, JSON.stringify(task_data))}
-    />
-  );
+const BpmnField = ({ record }) => {
+  const { diagram } = record;
+  return <ReactBpmn diagramXML={diagram} />;
 };
 
-export default FormBuilderInput;
+export default BpmnField;

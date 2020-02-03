@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.pandala</groupId>
+  <artifactId>hasunda-root</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <version.java>1.8</version.java>
+    <encoding>UTF-8</encoding>
+    <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+    <project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
+
+    <!-- versions -->
+    <version.camunda>7.12.0</version.camunda>
+    <version.connect>1.3.0</version.connect>
+    <version.camundaSpringBoot>3.4.0</version.camundaSpringBoot>
+    <version.springBoot>2.2.1.RELEASE</version.springBoot>
+
+    <!-- disable javadoc linter for JDK8 to not fail on incomplete javadoc -->
+    <additionalparam>-Xdoclint:none</additionalparam>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>app</module>
+  </modules>
+
+  <repositories>
+    <repository>
+      <id>repository</id>
+      <url>file://${user.home}/.m2/repository/</url>
+    </repository>
+  </repositories>
+</project>

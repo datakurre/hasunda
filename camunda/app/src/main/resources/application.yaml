@@ -1,0 +1,34 @@
+camunda.bpm:
+  authorization:
+    enabled: true
+  database:
+    type: ${DB_TYPE:postgres}
+  filter:
+    create: All tasks
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/camunda}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+
+plugin.identity.keycloak:
+  keycloakIssuerUrl: ${KEYCLOAK_ISSUER_URL:http://localhost:8000/auth/realms/master}
+  keycloakAdminUrl: ${KEYCLOAK_ADMIN_URL:http://localhost:8000/auth/admin/realms/master}
+  useEmailAsCamundaUserId: false
+  useUsernameAsCamundaUserId: true
+  administratorGroupName: ${KEYCLOAK_ADMIN_GROUP:camunda-admin}
+  clientId: ${OIC_CLIENT_ID:camunda-identity-service}
+  clientSecret: ${OIC_CLIENT_SECRET:1a693e21-f092-468d-bbae-6511d082d7b6}
+
+security:
+  oauth2:
+    client:
+      client-id: ${OIC_CLIENT_ID:camunda-identity-service}
+      client-secret: ${OIC_CLIENT_SECRET:1a693e21-f092-468d-bbae-6511d082d7b6}
+      accessTokenUri: ${OIC_ACCESS_TOKEN_URI:http://localhost:8000/auth/realms/master/protocol/openid-connect/token}
+      userAuthorizationUri: ${OIC_AUTHORIZATION_URI:http://localhost:8000/auth/realms/master/protocol/openid-connect/auth}
+      scope: openid profile email
+    resource:
+      userInfoUri: ${OIC_USER_INFO_URI:http://localhost:8000/auth/realms/master/protocol/openid-connect/userinfo}

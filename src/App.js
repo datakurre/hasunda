@@ -1,12 +1,12 @@
 // in src/App.js
 import React, { Component } from "react";
-import { Admin, ListGuesser, Resource } from "react-admin";
+import { Admin, ListGuesser, Loading, Resource } from "react-admin";
 import buildCamundaProvider from "./Camunda/Provider";
 import buildHasuraProvider, { buildQuery } from "ra-data-hasura-graphql";
 import { AutoCreate } from "./Auto";
 import {
-  ProcessDefinitionEdit,
-  ProcessDefinitionList
+  ProcessDefinitionList,
+  ProcessDefinitionShow
 } from "./Camunda/ProcessDefinition";
 import { FormCreate, FormEdit, FormList } from "./Form";
 
@@ -20,6 +20,7 @@ class App extends Component {
       dataProvider: (type, resource, params) => {
         switch (resource) {
           case "processDefinition":
+          case "processDefinitionUserTask":
             return this.state.camundaDataProvider(type, resource, params);
           default:
             return this.state.hasuraDataProvider(type, resource, params);
@@ -57,7 +58,7 @@ class App extends Component {
     } = this.state;
 
     if (!hasuraDataProvider || !camundaDataProvider) {
-      return <div>Loading</div>;
+      return <Loading />;
     }
 
     const resources = introspectionResults.resources
@@ -75,17 +76,13 @@ class App extends Component {
             create={AutoCreate(name, introspectionResults)}
           />
         ))}
-        <Resource
-          name="form"
-          list={FormList}
-          create={FormCreate}
-          edit={FormEdit}
-        />
+        <Resource name="form" create={FormCreate} edit={FormEdit} />
         <Resource
           name="processDefinition"
           list={ProcessDefinitionList}
-          //          edit={ProcessDefinitionEdit}
+          show={ProcessDefinitionShow}
         />
+        <Resource name="processDefinitionUserTask" />
       </Admin>
     );
   }

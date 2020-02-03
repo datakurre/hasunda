@@ -1,15 +1,15 @@
-import merge from "lodash/merge";
-import gql from "graphql-tag";
+import React from "react";
+import BpmnModdle from "bpmn-moddle";
 import buildDataProvider from "ra-data-graphql";
+import gql from "graphql-tag";
+import merge from "lodash/merge";
 
-const buildQuery = introspectionResults => (
+const processInstanceDataProvider = (
+  introspectionResults,
   raFetchType,
   resourceName,
   params
 ) => {
-  if (resourceName !== "processDefinition") {
-    throw new Error(`Unknown resource ${resourceName}.`);
-  }
   switch (raFetchType) {
     case "GET_LIST":
     case "GET_MANY":
@@ -33,7 +33,10 @@ const buildQuery = introspectionResults => (
         variables: {},
         parseResponse: response => {
           return {
-            ...response.data,
+            data: response.data.data.slice(
+              (params.pagination.page - 1) * params.pagination.perPage,
+              params.pagination.page * params.pagination.perPage
+            ),
             total: response.data.data.length
           };
         }
@@ -58,11 +61,104 @@ const buildQuery = introspectionResults => (
         variables: {
           id: `${params.id}`
         },
-        parseResponse: response => response.data
+        parseResponse: response => {
+          return response.data;
+        }
       };
     default:
-      debugger;
-      return {};
+      throw new Error(`Unsupported fetch type ${raFetchType}`);
+  }
+};
+
+const moddle = new BpmnModdle();
+
+const getUserTasks = (id, diagram) =>
+  new Promise((resolve, reject) => {
+    moddle.fromXML(diagram, function(err, definitions) {
+      const rootElements = definitions.get("rootElements");
+      const tasks = [];
+      for (let i = 0; i < rootElements.length; i++) {
+        if (!rootElements[i].flowElements) {
+          continue;
+        }
+        for (let j = 0; j < rootElements[i].flowElements.length; j++) {
+          if (rootElements[i].flowElements[j].$type === "bpmn:UserTask") {
+            let task = definitions.rootElements[i].flowElements[j];
+            task.processDefinitionId = id;
+            tasks.push(task);
+          }
+        }
+      }
+      resolve(tasks);
+    });
+  });
+
+const processInstanceUserTaskDataProvider = (
+  introspectionResults,
+  raFetchType,
+  resourceName,
+  params
+) => {
+  if (!params.id) {
+    throw new Error('Missing parameter "id".');
+  }
+  switch (raFetchType) {
+    case "GET_MANY_REFERENCE":
+      return {
+        query: gql`
+          query processDefinition($id: String!) {
+            data: processDefinition(id: $id) {
+              contextPath
+              description
+              diagram
+              id
+              isSuspended
+              key
+              name
+              startFormKey
+              versionTag
+            }
+          }
+        `,
+        variables: { id: params.id },
+        parseResponse: response =>
+          new Promise((resolve, reject) => {
+            const { id, diagram } = response.data.data;
+            getUserTasks(id, diagram).then(tasks => {
+              resolve({
+                data: tasks,
+                total: tasks.length
+              });
+            });
+          })
+      };
+    default:
+      throw new Error(`Unsupported fetch type ${raFetchType}`);
+  }
+};
+
+const buildQuery = introspectionResults => (
+  raFetchType,
+  resourceName,
+  params
+) => {
+  switch (resourceName) {
+    case "processDefinition":
+      return processInstanceDataProvider(
+        introspectionResults,
+        raFetchType,
+        resourceName,
+        params
+      );
+    case "processDefinitionUserTask":
+      return processInstanceUserTaskDataProvider(
+        introspectionResults,
+        raFetchType,
+        resourceName,
+        params
+      );
+    default:
+      throw new Error(`Unknown resource ${resourceName}.`);
   }
 };
 
@@ -78,21 +174,4 @@ export default options => {
       };
     }
   );
-};
-
-export const processDefinitionUserTaskProvider = {
-  getList: (resource, params) =>
-    new Promise((resolve, reject) => {
-      if (resource !== "processDefinitionUserTask") {
-        throw new Error(`Unknown resource ${resource}.`);
-      }
-    })
-  // getOne: (resource, params) => Promise,
-  // getMany: (resource, params) => Promise,
-  // getManyReference: (resource, params) => Promise,
-  // create: (resource, params) => Promise,
-  // update: (resource, params) => Promise,
-  // updateMany: (resource, params) => Promise,
-  // delete: (resource, params) => Promise,
-  // deleteMany: (resource, params) => Promise
 };
