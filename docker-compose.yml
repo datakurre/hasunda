@@ -2,8 +2,8 @@ version: '3.7'
 services:
   postgres:
     build: ./postgres
-    ports:
-      - "5432:5432"
+#   ports:
+#     - "5432:5432"
     environment:
       POSTGRES_DB: hasunda
       POSTGRES_USER: postgres
