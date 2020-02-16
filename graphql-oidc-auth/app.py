@@ -34,7 +34,7 @@ async def get_user_info(authorization):
     }) as session:
         async with session.get(TOKEN_INFO) as response:
             token_json = await response.json()
-            if "openid" in ((token_json or {}).get("scope") or []):
+            if True or "openid" in ((token_json or {}).get("scope") or []):
                 async with session.get(USER_INFO) as response:
                     return await response.json() or {}
     return {}
@@ -47,23 +47,23 @@ async def read_authorize_header(request):
         if authorization.startswith("Bearer "):
             user_info = await get_user_info(authorization)
             if "preferred_username" in user_info:
-                logger.debug(f"Valid user_info: {user_Info}")
+                logger.debug(f"Valid user_info: {user_info}")
                 return web.json_response({
                     "X-Hasura-Role": "authenticated",
                     "X-Hasura-User-Id": user_info["preferred_username"],
-                }),
-            logger.warning(f"Invalid user_info: {user_Info}")
+                })
+            logger.warning(f"Invalid user_info: {user_info}")
             logger.debug({
-                "X-Hasura-Role": "invalid",
+                "X-Hasura-Role": "anonymous",
             })
             return web.json_response({
-                "X-Hasura-Role": "invalid"}
+                "X-Hasura-Role": "anonymous"}
             )
-    return logger.debug({
-        "X-Hasura-Role": "public",
+    logger.debug({
+        "X-Hasura-Role": "anonymous",
     })
     return web.json_response({
-        "X-Hasura-Role": "public",
+        "X-Hasura-Role": "anonymous",
     })
 
 
