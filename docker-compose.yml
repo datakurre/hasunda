@@ -100,8 +100,7 @@ services:
     ports:
       - 1880:1880
     volumes:
-      - red_data:/data
+      - ./node-red:/data
 
 volumes:
   db_data:
-  red_data:

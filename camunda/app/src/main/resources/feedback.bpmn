@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_17ofqlk" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.5.0">
+  <bpmn:collaboration id="Collaboration">
+    <bpmn:participant id="Participant_0mza30b" name="User" processRef="FeedbackProcess" />
+  </bpmn:collaboration>
+  <bpmn:process id="FeedbackProcess" name="Feedback Process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_Feedback">
+      <bpmn:outgoing>SequenceFlow_1dlg9kn</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="UserTask_EnterFeedback" name="Enter Feedback">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="message" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1dlg9kn</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_196n8st</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_Feedback">
+      <bpmn:incoming>SequenceFlow_1do3tvh</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_MailSendFeedback">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_196n8st</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1do3tvh</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_17jt3db">
+        <bpmn:extensionElements>
+          <camunda:connector>
+            <camunda:inputOutput>
+              <camunda:inputParameter name="to">asko.soukka@iki.fi</camunda:inputParameter>
+              <camunda:inputParameter name="subject">Aihe</camunda:inputParameter>
+              <camunda:inputParameter name="text">
+                <camunda:script scriptFormat="JavaScript">execution.getVariable("message");</camunda:script>
+              </camunda:inputParameter>
+            </camunda:inputOutput>
+            <camunda:connectorId>mail-send</camunda:connectorId>
+          </camunda:connector>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1do3tvh" sourceRef="IntermediateThrowEvent_MailSendFeedback" targetRef="EndEvent_Feedback" />
+    <bpmn:sequenceFlow id="SequenceFlow_1dlg9kn" sourceRef="StartEvent_Feedback" targetRef="UserTask_EnterFeedback" />
+    <bpmn:sequenceFlow id="SequenceFlow_196n8st" sourceRef="UserTask_EnterFeedback" targetRef="IntermediateThrowEvent_MailSendFeedback" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration">
+      <bpmndi:BPMNShape id="Participant_0mza30b_di" bpmnElement="Participant_0mza30b" isHorizontal="true">
+        <dc:Bounds x="150" y="82" width="550" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_Feedback">
+        <dc:Bounds x="229" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0d7x9me_di" bpmnElement="UserTask_EnterFeedback">
+        <dc:Bounds x="330" y="167" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0l22kjd_di" bpmnElement="EndEvent_Feedback">
+        <dc:Bounds x="612" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0o12u13_di" bpmnElement="IntermediateThrowEvent_MailSendFeedback">
+        <dc:Bounds x="482" y="189" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_196n8st_di" bpmnElement="SequenceFlow_196n8st">
+        <di:waypoint x="430" y="207" />
+        <di:waypoint x="482" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1dlg9kn_di" bpmnElement="SequenceFlow_1dlg9kn">
+        <di:waypoint x="265" y="207" />
+        <di:waypoint x="330" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1do3tvh_di" bpmnElement="SequenceFlow_1do3tvh">
+        <di:waypoint x="518" y="207" />
+        <di:waypoint x="612" y="207" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
