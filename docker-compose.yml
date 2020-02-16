@@ -15,7 +15,7 @@ services:
   keycloak:
     image: jboss/keycloak
     ports:
-      - "8000:8080"
+      - "8080:8080"
     depends_on:
       - "postgres"
     environment:
@@ -26,8 +26,8 @@ services:
       DB_USER: postgres
       DB_SCHEMA: public
       DB_PASSWORD: postgres
-#     KEYCLOAK_USER: admin
-#     KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
   mailhog:
     image: mailhog/mailhog
     ports:
@@ -36,7 +36,7 @@ services:
     build:
       context: ./camunda
     ports:
-      - "8080:8080"
+      - "8800:8080"
     depends_on:
       - "postgres"
       - "mailhog"
@@ -47,17 +47,16 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/camunda
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
+      WAIT_FOR: keycloak:8080
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/auth/realms/master
       KEYCLOAK_ADMIN_URL: http://keycloak:8080/auth/admin/realms/master
       KEYCLOAK_ADMIN_GROUP: camunda-admin
       OIC_CLIENT_ID: camunda-identity-service
       OIC_CLIENT_SECRET: 1a693e21-f092-468d-bbae-6511d082d7b6
       OIC_ACCESS_TOKEN_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/token
-      OIC_AUTHORIZATION_URI: http://localhost:8000/auth/realms/master/protocol/openid-connect/auth
+      OIC_AUTHORIZATION_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/auth
       OIC_USER_INFO_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/userinfo
-      MAIL_TRANSPORT_PROTOCOL: smtp
-      MAIL_SMTP_HOST: mailhog
-      MAIL_SMTP_PORT: 1025
+      HASURA_CAMUNDA_SECRET: 797ZFPzO^5ns%r#v9z3B2#4#9tbKJSGQ
   graphql-engine:
     image: hasura/graphql-engine:v1.1.0-beta.2
     ports:
@@ -72,7 +71,8 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_AUTH_HOOK: http://graphql-keycloak-auth:8080/
+      HASURA_CAMUNDA_SECRET: 797ZFPzO^5ns%r#v9z3B2#4#9tbKJSGQ
+      HASURA_GRAPHQL_AUTH_HOOK: http://graphql-oidc-auth:8080/
       HASURA_GRAPHQL_ADMIN_SECRET: admin
   graphql-oidc-auth:
     build:
@@ -90,6 +90,13 @@ services:
     volumes:
       - "./graphql-events-relay:/etc/webhook"
     restart: always
+  node-red:
+    image: nodered/node-red
+    ports:
+      - 1880:1880
+    volumes:
+      - red_data:/data
 
 volumes:
   db_data:
+  red_data:

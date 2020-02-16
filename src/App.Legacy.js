@@ -3,12 +3,13 @@ import React, { Component } from "react";
 import { Admin, ListGuesser, Loading, Resource } from "react-admin";
 import buildCamundaProvider from "./Camunda/Provider";
 import buildHasuraProvider, { buildQuery } from "ra-data-hasura-graphql";
-import { AutoCreate } from "./Auto";
+import { AutoCreate, AutoEdit } from "./Auto";
 import {
   ProcessDefinitionList,
   ProcessDefinitionShow
 } from "./Camunda/ProcessDefinition";
 import { FormCreate, FormEdit, FormList } from "./Form";
+import authProvider from "./authProvider";
 
 class App extends Component {
   constructor() {
@@ -31,22 +32,26 @@ class App extends Component {
   componentDidMount() {
     buildCamundaProvider({
       clientOptions: {
-        uri: "http://localhost:9000/v1/graphql"
+        uri: "http://localhost:8900/v1/graphql"
       }
-    }).then(camundaDataProvider =>
-      this.setState({ ...this.state, camundaDataProvider })
-    );
+    })
+      .then(camundaDataProvider =>
+        this.setState({ ...this.state, camundaDataProvider })
+      )
+      .catch(() => {});
     buildHasuraProvider({
       buildQuery: introspectionResults => {
         this.setState({ ...this.state, introspectionResults });
         return buildQuery(introspectionResults);
       },
       clientOptions: {
-        uri: "http://localhost:9000/v1/graphql"
+        uri: "http://localhost:8900/v1/graphql"
       }
-    }).then(hasuraDataProvider => {
-      this.setState({ ...this.state, hasuraDataProvider });
-    });
+    })
+      .then(hasuraDataProvider => {
+        this.setState({ ...this.state, hasuraDataProvider });
+      })
+      .catch(() => {});
   }
 
   render() {
@@ -67,16 +72,22 @@ class App extends Component {
       .filter(name => !name.match(/_aggregate$/));
 
     return (
-      <Admin dataProvider={dataProvider}>
+      <Admin authProvider={authProvider} dataProvider={dataProvider}>
         {resources.map(name => (
           <Resource
             key={name}
             name={name}
             list={ListGuesser}
             create={AutoCreate(name, introspectionResults)}
+            edit={AutoEdit(name, introspectionResults)}
           />
         ))}
-        <Resource name="form" create={FormCreate} edit={FormEdit} />
+        <Resource
+          name="form"
+          create={FormCreate}
+          edit={FormEdit}
+          list={FormList}
+        />
         <Resource
           name="processDefinition"
           list={ProcessDefinitionList}
