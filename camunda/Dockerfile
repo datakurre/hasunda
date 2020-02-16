@@ -10,7 +10,7 @@ RUN \
     cd ..
 # pre-populate maven cache
 RUN \
-    curl -LO https://github.com/datakurre/hasunda/archive/spring-boot.tar.gz; \
+    curl -LO https://github.com/datakurre/hasunda/archive/master.tar.gz; \
     tar xzvf spring-boot.tar.gz; \
     cd hasunda-spring-boot/camunda; \
     mvn package; \
