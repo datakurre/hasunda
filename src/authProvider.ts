@@ -19,7 +19,8 @@ const clientSettings = {
   scope: "openid email profile",
   filterProtocolClaims: true,
   loadUserInfo: true,
-  automaticSilentRenew: false
+  automaticSilentRenew: true,
+  accessTokenExpiringNotificationTime: 30
 };
 
 const userManager = new UserManager(clientSettings);
@@ -40,14 +41,6 @@ const mutex = {
     mutex.free = true;
   }
 };
-
-interface Profile {
-  email: string;
-  family_name: string;
-  given_name: string;
-  name: string;
-  preferred_username: string;
-}
 
 export const getUser = (): [User, null] => {
   return sessionStorage.getItem(SESSION_KEY)
@@ -77,7 +70,10 @@ const authProvider = {
     try {
       await mutex.acquire();
       const user = getUser();
-      if (user) {
+      if (
+        user &&
+        new Date(((user as unknown) as User).expires_at * 1000) > new Date()
+      ) {
         return;
       } else {
         const qs = window.location.search;

@@ -58,7 +58,7 @@ services:
       OIC_USER_INFO_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/userinfo
       HASURA_CAMUNDA_SECRET: 797ZFPzO^5ns%r#v9z3B2#4#9tbKJSGQ
   graphql-engine:
-    image: hasura/graphql-engine:v1.1.0-beta.2
+    image: hasura/graphql-engine:v1.1.0-beta.3
     ports:
       - "8900:8080"
     depends_on:
