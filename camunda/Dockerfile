@@ -11,8 +11,8 @@ RUN \
 # pre-populate maven cache
 RUN \
     curl -LO https://github.com/datakurre/hasunda/archive/master.tar.gz; \
-    tar xzvf spring-boot.tar.gz; \
-    cd hasunda-spring-boot/camunda; \
+    tar xzvf master.tar.gz; \
+    cd hasunda-master/camunda; \
     mvn package; \
     cd ../..
 # camunda
