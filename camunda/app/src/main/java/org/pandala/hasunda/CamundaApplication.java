@@ -27,13 +27,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         "org.pandala.hasunda",
 })
 @EnableProcessApplication
-public class WebappProcessApplication {
+public class CamundaApplication {
 
     @Autowired
     private RuntimeService runtimeService;
 
     public static void main(String... args) {
-        SpringApplication.run(WebappProcessApplication.class, args);
+        SpringApplication.run(CamundaApplication.class, args);
     }
 
 }

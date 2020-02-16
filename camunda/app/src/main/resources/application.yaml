@@ -1,10 +1,23 @@
+# https://docs.camunda.org/manual/latest/user-guide/spring-boot-integration/configuration/#camunda-engine-properties
 camunda.bpm:
   authorization:
     enabled: true
+    enabled-for-custom-code: true
+    authorization-check-revokes: true
   database:
     type: ${DB_TYPE:postgres}
   filter:
     create: All tasks
+
+server:
+  port: ${HTTP_PORT:8080}
+
+logging.level:
+    org.springframework.web: ${LOG_LEVEL_WEB:INFO}
+    org.pandala.hasunda: ${LOG_LEVEL_HASUNDA:INFO}
+
+hasura.camunda:
+  secret: ${HASURA_CAMUNDA_SECRET:secret}
 
 spring:
   datasource:
@@ -12,23 +25,24 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+  security:
+    oauth2:
+      client:
+        registration:
+          oidc:
+            client-id: ${OIC_CLIENT_ID:camunda-identity-service}
+            client-secret: ${OIC_CLIENT_SECRET:1a693e21-f092-468d-bbae-6511d082d7b6}
+            authorizationGrantType: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+        provider:
+          oidc:
+            issuer-uri: ${OIC_ISSUER_URI:http://keycloak:8080/auth/realms/master}
 
 plugin.identity.keycloak:
-  keycloakIssuerUrl: ${KEYCLOAK_ISSUER_URL:http://localhost:8000/auth/realms/master}
-  keycloakAdminUrl: ${KEYCLOAK_ADMIN_URL:http://localhost:8000/auth/admin/realms/master}
+  keycloakIssuerUrl: ${KEYCLOAK_ISSUER_URL:http://keycloak:8080/auth/realms/master}
+  keycloakAdminUrl: ${KEYCLOAK_ADMIN_URL:http://keycloak:8080/auth/admin/realms/master}
   useEmailAsCamundaUserId: false
   useUsernameAsCamundaUserId: true
   administratorGroupName: ${KEYCLOAK_ADMIN_GROUP:camunda-admin}
   clientId: ${OIC_CLIENT_ID:camunda-identity-service}
   clientSecret: ${OIC_CLIENT_SECRET:1a693e21-f092-468d-bbae-6511d082d7b6}
-
-security:
-  oauth2:
-    client:
-      client-id: ${OIC_CLIENT_ID:camunda-identity-service}
-      client-secret: ${OIC_CLIENT_SECRET:1a693e21-f092-468d-bbae-6511d082d7b6}
-      accessTokenUri: ${OIC_ACCESS_TOKEN_URI:http://localhost:8000/auth/realms/master/protocol/openid-connect/token}
-      userAuthorizationUri: ${OIC_AUTHORIZATION_URI:http://localhost:8000/auth/realms/master/protocol/openid-connect/auth}
-      scope: openid profile email
-    resource:
-      userInfoUri: ${OIC_USER_INFO_URI:http://localhost:8000/auth/realms/master/protocol/openid-connect/userinfo}
