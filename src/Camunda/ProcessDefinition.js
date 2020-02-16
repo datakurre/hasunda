@@ -1,16 +1,22 @@
-import React from "react";
-import BpmnModdle from "bpmn-moddle";
+import { useEffect, useState } from "react";
+import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
 import {
+  Button,
   Datagrid,
-  Edit,
-  EditButton,
+  Error,
+  Link,
   List,
-  ListButton,
-  SimpleForm,
+  Loading,
+  ReferenceManyField,
+  Show,
+  ShowButton,
+  SimpleShowLayout,
   TextField,
-  TextInput,
-  TopToolbar
+  useDataProvider
 } from "react-admin";
+import BpmnField from "../BpmnField";
+import React from "react";
 
 export const ProcessDefinitionList = props => {
   return (
@@ -18,39 +24,110 @@ export const ProcessDefinitionList = props => {
       <Datagrid>
         <TextField source="id" />
         <TextField source="name" />
-        <EditButton />
+        <ShowButton />
       </Datagrid>
     </List>
   );
 };
 
-const ProcessDefinitionEditActions = ({ basePath, data }) => {
-  if (data) {
-    const moddle = new BpmnModdle();
-    moddle.fromXML(data.diagram, function(err, definitions) {
-      let rootElements = definitions.get("rootElements");
-      console.log(rootElements);
-      for (let i = 0; i < rootElements[1].flowElements.length; i++) {
-        if (rootElements[1].flowElements[i].$type === "bpmn:UserTask") {
-          console.log("UserTask: ");
-          console.log(definitions.rootElements[1].flowElements[i]);
-        }
-      }
-    });
+export const AddOrShowFormButton = ({ record }) => {
+  const id = `${record["$parent"].id}:${record.id}`;
+  const dataProvider = useDataProvider();
+  const [context, setContext] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    dataProvider
+      .getOne("form", { id: id })
+      .then(({ data }) => {
+        setContext(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setLoading(false);
+      });
+  }, [dataProvider, id]);
+
+  if (loading) return <Loading />;
+  if (error) return <Error error={error} />;
+  if (!context || !context.id) {
+    return (
+      <Link
+        to={{
+          pathname: "/form/create",
+          search: `?id=${id}&processDefinitionId=${record.processDefinitionId}`
+        }}
+      >
+        <Button label="Add form">
+          <AddIcon />
+        </Button>
+      </Link>
+    );
+  } else {
+    return (
+      <Link
+        to={{
+          pathname: `/form/${id}`,
+          search: `?processDefinitionId=${record.processDefinitionId}`
+        }}
+      >
+        <Button label="Edit form">
+          <EditIcon />
+        </Button>
+      </Link>
+    );
   }
-  return (
-    <TopToolbar>
-      <ListButton basePath={basePath} record={data} label="Back" />
-    </TopToolbar>
-  );
 };
 
-export const ProcessDefinitionEdit = props => {
+export const ProcessDefinitionShow = props => {
+  const { id } = props;
+  const dataProvider = useDataProvider();
+  const [context, setContext] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    dataProvider
+      .getOne("processDefinition", { id: id })
+      .then(({ data }) => {
+        setContext(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        if (
+          error.toString() ===
+          "TypeError: (destructured parameter) is undefined"
+        ) {
+        } else {
+          setError(error);
+          setLoading(false);
+        }
+      });
+  }, [dataProvider, id]);
+
+  if (loading) return <Loading />;
+  if (error) return <Error />;
+  if (!context) return null;
+
   return (
-    <Edit actions={<ProcessDefinitionEditActions />} {...props}>
-      <SimpleForm>
-        <TextInput disabled source="name" label="ProcessDefinition name" />
-      </SimpleForm>
-    </Edit>
+    <Show {...props}>
+      <SimpleShowLayout>
+        <TextField source="id" />
+        <TextField source="name" />
+        <BpmnField source="diagram" />
+        <ReferenceManyField
+          label="User tasks"
+          reference="processDefinitionUserTask"
+          target="id"
+        >
+          <Datagrid>
+            <TextField source="name" />
+            <AddOrShowFormButton />
+          </Datagrid>
+        </ReferenceManyField>
+      </SimpleShowLayout>
+    </Show>
   );
 };
