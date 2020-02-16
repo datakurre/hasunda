@@ -1,0 +1,14 @@
+remote_schemas:
+- definition:
+    forward_client_headers: true
+    headers:
+    - name: X-Hasura-Camunda-Secret
+      value_from_env: HASURA_CAMUNDA_SECRET
+    timeout_seconds: 60
+    url: http://camunda:8080/graphql
+  name: Camunda
+tables:
+- table:
+    name: form
+    schema: public
+version: 2

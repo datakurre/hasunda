@@ -2,7 +2,7 @@ import { Log, User, UserManager } from "oidc-client";
 
 Log.logger = console;
 
-const AUTHORITY = "http://keycloak:8080/auth/realms/master";
+const AUTHORITY = "http://keycloak:8080/auth/realms/hasunda";
 const CLIENT_ID = process.env.REACT_APP_CLIENT_ID || "react-admin";
 const REDIRECT_URI =
   process.env.REACT_APP_REDIRECT_URI || "http://localhost:3000/";

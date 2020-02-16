@@ -5,10 +5,10 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: camunda
+      POSTGRES_DB: hasunda
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_MULTIPLE_DATABASES: hasunda,keycloak
+      POSTGRES_MULTIPLE_DATABASES: camunda,keycloak
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -28,6 +28,9 @@ services:
       DB_PASSWORD: postgres
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/example-realm.json
+    volumes:
+      - ./keycloak/realm-export.json:/tmp/example-realm.json
   mailhog:
     image: mailhog/mailhog
     ports:
@@ -48,23 +51,23 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       WAIT_FOR: keycloak:8080
-      KEYCLOAK_ISSUER_URL: http://keycloak:8080/auth/realms/master
-      KEYCLOAK_ADMIN_URL: http://keycloak:8080/auth/admin/realms/master
+      KEYCLOAK_ISSUER_URL: http://keycloak:8080/auth/realms/hasunda
+      KEYCLOAK_ADMIN_URL: http://keycloak:8080/auth/admin/realms/hasunda
       KEYCLOAK_ADMIN_GROUP: camunda-admin
       OIC_CLIENT_ID: camunda-identity-service
       OIC_CLIENT_SECRET: 1a693e21-f092-468d-bbae-6511d082d7b6
-      OIC_ACCESS_TOKEN_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/token
-      OIC_AUTHORIZATION_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/auth
-      OIC_USER_INFO_URI: http://keycloak:8080/auth/realms/master/protocol/openid-connect/userinfo
+      OIC_ISSUER_URI: http://keycloak:8080/auth/realms/hasunda
+      OIC_ACCESS_TOKEN_URI: http://keycloak:8080/auth/realms/hasunda/protocol/openid-connect/token
       HASURA_CAMUNDA_SECRET: 797ZFPzO^5ns%r#v9z3B2#4#9tbKJSGQ
   graphql-engine:
-    image: hasura/graphql-engine:v1.1.0-beta.3
+    image: hasura/graphql-engine:v1.1.0-beta.3.cli-migrations
     ports:
       - "8900:8080"
     depends_on:
-      - "postgres"
       - "camunda"
       - "graphql-oidc-auth"
+      - "keycloak"
+      - "postgres"
     restart: always
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@postgres:5432/hasunda
@@ -74,21 +77,23 @@ services:
       HASURA_CAMUNDA_SECRET: 797ZFPzO^5ns%r#v9z3B2#4#9tbKJSGQ
       HASURA_GRAPHQL_AUTH_HOOK: http://graphql-oidc-auth:8080/
       HASURA_GRAPHQL_ADMIN_SECRET: admin
+    volumes:
+      - ./graphql-engine:/hasura-migrations
   graphql-oidc-auth:
     build:
       context: ./graphql-oidc-auth
     depends_on:
       - "keycloak"
     environment:
-      USER_INFO: http://keycloak:8080/auth/realms/master/protocol/openid-connect/userinfo
-      TOKEN_INFO: http://keycloak:8080/auth/realms/master/protocol/openid-connect/token/introspect
+      USER_INFO: http://keycloak:8080/auth/realms/hasunda/protocol/openid-connect/userinfo
+      TOKEN_INFO: http://keycloak:8080/auth/realms/hasunda/protocol/openid-connect/token/introspect
     restart: always
   graphql-events-relay:
     image: vimagick/webhook
 #   ports:
 #     - "9000:9000"
     volumes:
-      - "./graphql-events-relay:/etc/webhook"
+      - ./graphql-events-relay:/etc/webhook
     restart: always
   node-red:
     image: nodered/node-red
