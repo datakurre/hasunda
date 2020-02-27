@@ -1,4 +1,4 @@
-package org.pandala.hasunda;
+package fi.jyu.vasara;
 
 import org.camunda.bpm.engine.IdentityService;
 import org.slf4j.Logger;

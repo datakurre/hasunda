@@ -1,4 +1,4 @@
-package org.pandala.hasunda;
+package fi.jyu.vasara;
 
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
@@ -87,7 +87,7 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
     public FilterRegistrationBean containerBasedAuthenticationFilter() {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(new ContainerBasedAuthenticationFilter());
-        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "org.pandala.hasunda.OidcAuthenticationProvider"));
+        filterRegistration.setInitParameters(Collections.singletonMap("authentication-provider", "fi.jyu.vasara.OidcAuthenticationProvider"));
         filterRegistration.setOrder(101);  // make sure the filter is registered after the Spring Security Filter Chain
         filterRegistration.addUrlPatterns("/app/*");
         return filterRegistration;

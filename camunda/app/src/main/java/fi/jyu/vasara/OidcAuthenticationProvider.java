@@ -1,4 +1,4 @@
-package org.pandala.hasunda;
+package fi.jyu.vasara;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;

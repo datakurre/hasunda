@@ -1,4 +1,4 @@
-package org.pandala.hasunda;
+package fi.jyu.vasara;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

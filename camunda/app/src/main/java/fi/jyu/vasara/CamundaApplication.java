@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pandala.hasunda;
+package fi.jyu.vasara;
 
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
@@ -24,7 +24,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = {
         "org.camunda.bpm.extension.graphql",
-        "org.pandala.hasunda",
+        "fi.jyu.vasara",
 })
 @EnableProcessApplication
 public class CamundaApplication {

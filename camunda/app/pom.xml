@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.pandala</groupId>
-    <artifactId>hasunda-root</artifactId>
+    <groupId>fi.jyu.vasara</groupId>
+    <artifactId>root</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>hasunda-camunda-app</artifactId>
+  <artifactId>vasara-camunda-app</artifactId>
 
   <properties>
     <maven.compiler.source>${version.java}</maven.compiler.source>

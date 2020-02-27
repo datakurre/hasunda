@@ -15,7 +15,7 @@ server:
 
 logging.level:
     org.springframework.web: ${LOG_LEVEL_WEB:INFO}
-    org.pandala.hasunda: ${LOG_LEVEL_HASUNDA:INFO}
+    fi.jyu.vasara: ${LOG_LEVEL_HASUNDA:INFO}
 
 hasura.camunda:
   secret: ${HASURA_CAMUNDA_SECRET:secret}

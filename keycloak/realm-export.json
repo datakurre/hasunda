@@ -1,6 +1,6 @@
 {
-  "id": "hasunda",
-  "realm": "hasunda",
+  "id": "vasara",
+  "realm": "vasara",
   "notBefore": 0,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
@@ -44,7 +44,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "hasunda",
+        "containerId": "vasara",
         "attributes": {}
       },
       {
@@ -53,7 +53,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "hasunda",
+        "containerId": "vasara",
         "attributes": {}
       }
     ],
@@ -468,7 +468,7 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/hasunda/account/",
+      "baseUrl": "/realms/vasara/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
@@ -478,7 +478,7 @@
         "manage-account"
       ],
       "redirectUris": [
-        "/realms/hasunda/account/*"
+        "/realms/vasara/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -874,13 +874,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/hasunda/console/",
+      "baseUrl": "/admin/vasara/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/admin/hasunda/console/*"
+        "/admin/vasara/console/*"
       ],
       "webOrigins": [
         "+"
