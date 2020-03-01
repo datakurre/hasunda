@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import {
@@ -10,13 +10,11 @@ import {
   Loading,
   ReferenceManyField,
   Show,
-  ShowButton,
   SimpleShowLayout,
   TextField,
   useDataProvider
 } from "react-admin";
 import BpmnField from "../BpmnField";
-import React from "react";
 
 export const ProcessDefinitionList = props => {
   return (
@@ -24,7 +22,6 @@ export const ProcessDefinitionList = props => {
       <Datagrid>
         <TextField source="id" />
         <TextField source="name" />
-        <ShowButton />
       </Datagrid>
     </List>
   );

@@ -83,7 +83,7 @@ type CamundaDataProvider = (
   | DeleteResult
   | DeleteManyResult;
 
-const processInstanceDataProvider: CamundaDataProvider = (
+const processDefinitionDataProvider: CamundaDataProvider = (
   introspectionResults,
   raFetchType,
   resource,
@@ -97,7 +97,7 @@ const processInstanceDataProvider: CamundaDataProvider = (
       return {
         query: gql`
           query processDefinitions {
-            data: processDefinitions {
+            processDefinitions {
               id
               versionTag
               name
@@ -113,12 +113,12 @@ const processInstanceDataProvider: CamundaDataProvider = (
         variables: {},
         parseResponse: (response: any) => {
           return {
-            data: response.data.data.slice(
+            data: response.data.processDefinitions.slice(
               (getListParams.pagination.page - 1) *
                 getListParams.pagination.perPage,
               getListParams.pagination.page * getListParams.pagination.perPage
             ),
-            total: response.data.data.length
+            total: response.data.processDefinitions.length
           };
         }
       };
@@ -127,7 +127,7 @@ const processInstanceDataProvider: CamundaDataProvider = (
       return {
         query: gql`
           query processDefinition($id: String!) {
-            data: processDefinition(id: $id) {
+            processDefinition(id: $id) {
               contextPath
               description
               diagram
@@ -145,7 +145,7 @@ const processInstanceDataProvider: CamundaDataProvider = (
         },
         parseResponse: (response: any) => {
           return {
-            data: response.data.data
+            data: response.data.processDefinition
           };
         }
       };
@@ -184,7 +184,7 @@ const getUserTasks = (id: string, diagram: string) =>
     });
   });
 
-const processInstanceUserTaskDataProvider: CamundaDataProvider = (
+const processDefinitionUserTaskDataProvider: CamundaDataProvider = (
   introspectionResults,
   raFetchType,
   resource,
@@ -199,7 +199,7 @@ const processInstanceUserTaskDataProvider: CamundaDataProvider = (
       return {
         query: gql`
           query processDefinition($id: String!) {
-            data: processDefinition(id: $id) {
+            processDefinition(id: $id) {
               contextPath
               description
               diagram
@@ -215,7 +215,7 @@ const processInstanceUserTaskDataProvider: CamundaDataProvider = (
         variables: { id: params_.id },
         parseResponse: (response: any) =>
           new Promise((resolve, reject) => {
-            const { id, diagram } = response.data.data;
+            const { id, diagram } = response.data.processDefinition;
             getUserTasks(id, diagram).then((tasks: any) => {
               resolve({
                 data: tasks,
@@ -223,6 +223,242 @@ const processInstanceUserTaskDataProvider: CamundaDataProvider = (
               });
             });
           })
+      };
+    default:
+      console.error(`Unsupported fetch type ${raFetchType}`);
+      return {
+        data: []
+      };
+  }
+};
+
+const processInstanceDataProvider: CamundaDataProvider = (
+  introspectionResults,
+  raFetchType,
+  resource,
+  params
+) => {
+  switch (raFetchType) {
+    case RaFetchType.CREATE:
+      const createParams = params as CreateParams;
+      return {
+        query: gql`
+          mutation StartProcessInstanceByKey($key: String!) {
+            startProcessInstanceByKey(key: $key) {
+              businessKey
+              caseInstanceId
+              isEnded
+              processInstanceId
+              tenantId
+              processDefinitionId
+              id
+              variables {
+                key
+                value
+                valueType
+              }
+            }
+          }
+        `,
+        variables: { key: createParams.data.key },
+        parseResponse: (response: any) => {
+          return {
+            data: response.data.startProcessInstanceByKey
+          };
+        }
+      };
+    case RaFetchType.GET_LIST:
+    case RaFetchType.GET_MANY:
+    case RaFetchType.GET_MANY_REFERENCE:
+      const getListParams = params as GetListParams;
+      return {
+        query: gql`
+          query processInstances {
+            processInstances {
+              variables {
+                key
+                value
+                valueType
+              }
+              tenantId
+              processInstanceId
+              processDefinitionId
+              isEnded
+              id
+              caseInstanceId
+              businessKey
+            }
+          }
+        `,
+        variables: {},
+        parseResponse: (response: any) => {
+          return {
+            data: response.data.processInstances.slice(
+              (getListParams.pagination.page - 1) *
+                getListParams.pagination.perPage,
+              getListParams.pagination.page * getListParams.pagination.perPage
+            ),
+            total: response.data.processInstances.length
+          };
+        }
+      };
+    case RaFetchType.GET_ONE:
+      const getOneParams = params as GetOneParams;
+      return {
+        query: gql`
+          query processInstance($id: String!) {
+            processInstance(id: $id) {
+              variables {
+                key
+                value
+                valueType
+              }
+              tenantId
+              processInstanceId
+              processDefinitionId
+              isEnded
+              id
+              caseInstanceId
+              businessKey
+            }
+          }
+        `,
+        variables: {
+          id: `${getOneParams.id}`
+        },
+        parseResponse: (response: any) => {
+          return {
+            data: response.data.processInstance
+          };
+        }
+      };
+    default:
+      console.error(`Unsupported fetch type ${raFetchType}`);
+      return {
+        data: []
+      };
+  }
+};
+
+const processInstanceUserTaskDataProvider: CamundaDataProvider = (
+  introspectionResults,
+  raFetchType,
+  resource,
+  params
+) => {
+  switch (raFetchType) {
+    case RaFetchType.GET_LIST:
+    case RaFetchType.GET_MANY:
+    case RaFetchType.GET_MANY_REFERENCE:
+      const getListParams = params as GetListParams;
+      return {
+        query: gql`
+          query userTasks {
+            tasks {
+              assignee {
+                email
+                firstName
+                id
+                lastName
+              }
+              caseDefinitionId
+              caseExecutionId
+              caseInstanceId
+              contextPath
+              createTime
+              description
+              executionEntity {
+                id
+                isEnded
+                tenantId
+                processInstanceId
+                isSuspended
+              }
+              executionId
+              id
+              formKey
+              isSuspended
+              variables {
+                value
+                valueType
+                key
+              }
+              processInstanceId
+              taskDefinitionKey
+              tenantId
+              processDefinitionId
+              priority
+              parentTaskId
+              owner
+              name
+            }
+          }
+        `,
+        variables: {},
+        parseResponse: (response: any) => {
+          return {
+            data: response.data.tasks.slice(
+              (getListParams.pagination.page - 1) *
+                getListParams.pagination.perPage,
+              getListParams.pagination.page * getListParams.pagination.perPage
+            ),
+            total: response.data.tasks.length
+          };
+        }
+      };
+    case RaFetchType.GET_ONE:
+      const getOneParams = params as GetOneParams;
+      return {
+        query: gql`
+          query userTask($id: String!) {
+            task(id: $id) {
+              assignee {
+                email
+                firstName
+                id
+                lastName
+              }
+              caseDefinitionId
+              caseExecutionId
+              caseInstanceId
+              contextPath
+              createTime
+              description
+              executionEntity {
+                id
+                isEnded
+                tenantId
+                processInstanceId
+                isSuspended
+              }
+              executionId
+              id
+              formKey
+              isSuspended
+              variables {
+                value
+                valueType
+                key
+              }
+              processInstanceId
+              taskDefinitionKey
+              tenantId
+              processDefinitionId
+              priority
+              parentTaskId
+              owner
+              name
+            }
+          }
+        `,
+        variables: {
+          id: `${getOneParams.id}`
+        },
+        parseResponse: (response: any) => {
+          return {
+            data: response.data.task
+          };
+        }
       };
     default:
       console.error(`Unsupported fetch type ${raFetchType}`);
@@ -247,13 +483,27 @@ const buildQuery = (introspectionResults: any) => (
 ) => {
   switch (resource) {
     case "processDefinition":
-      return processInstanceDataProvider(
+      return processDefinitionDataProvider(
         introspectionResults,
         raFetchType,
         resource,
         params
       );
     case "processDefinitionUserTask":
+      return processDefinitionUserTaskDataProvider(
+        introspectionResults,
+        raFetchType,
+        resource,
+        params
+      );
+    case "processInstance":
+      return processInstanceDataProvider(
+        introspectionResults,
+        raFetchType,
+        resource,
+        params
+      );
+    case "processInstanceUserTask":
       return processInstanceUserTaskDataProvider(
         introspectionResults,
         raFetchType,
