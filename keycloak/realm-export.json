@@ -340,14 +340,14 @@
     "lastName" : "Doe",
     "email" : "janedoe@example.com",
     "credentials" : [ {
-      "id" : "eb8c835d-6254-4c1b-a2c2-1f937638c319",
+      "id" : "f0d4ba22-3c0d-499d-a7ba-aac8d4019cb9",
       "type" : "password",
-      "createdDate" : 1582907396063,
-      "secretData" : "{\"value\":\"YCYEuUMZSpQBCwxR3larnBi1WQcIBMNZJhftpeQgt5eo9+NvqEdPAGjUtlZhATaASB6BDSbxsaUSeQ3HLgFKoQ==\",\"salt\":\"aDo0IhWEtOF6Nurhe9yVvg==\"}",
+      "createdDate" : 1582912001239,
+      "secretData" : "{\"value\":\"wJYZLvHeTORiQuM7GvisEPWFgoSS62jkRG8HuLjxlywK5TEyeF7HKz/TW2pRMyQT6e15B3ZUXP02LetfYz/1lQ==\",\"salt\":\"+8vchwLw7RLerwvtxvYgnA==\"}",
       "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
     } ],
     "disableableCredentialTypes" : [ ],
-    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "requiredActions" : [ ],
     "realmRoles" : [ "uma_authorization", "offline_access" ],
     "clientRoles" : {
       "account" : [ "view-profile", "manage-account" ]
@@ -365,14 +365,14 @@
     "lastName" : "Doe",
     "email" : "johndoe@example.com",
     "credentials" : [ {
-      "id" : "11c4da22-2ed1-48f3-b5e8-e5ae7100e83b",
+      "id" : "2a0b9609-e704-40dd-88d9-975b6243c396",
       "type" : "password",
-      "createdDate" : 1582907357676,
-      "secretData" : "{\"value\":\"Fk3YmSwY9WxXgCB2/DAANtPgASsYmYIMjzWxqkLJLbrJgIXkiMiqg6FAKcxaGQ3RhwqZB3Csnj0Xmp6uNEKqhg==\",\"salt\":\"3sMLhlhguq6Pv8CAqEMjTA==\"}",
+      "createdDate" : 1582911968060,
+      "secretData" : "{\"value\":\"S118CAvNIlp6y/68JPaYVyJRARDfK/ztRbiZu77gUB8a21ckcxkaEDuAT4s2xfREiCi+YWDM9Z0AWvP1sfQvNQ==\",\"salt\":\"QuumHqj4mclMJEc+pZCTdQ==\"}",
       "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
     } ],
     "disableableCredentialTypes" : [ ],
-    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "requiredActions" : [ ],
     "realmRoles" : [ "uma_authorization", "offline_access" ],
     "clientRoles" : {
       "account" : [ "view-profile", "manage-account" ]
