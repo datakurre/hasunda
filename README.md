@@ -1,3 +1,5 @@
+Note: Project has been renamed and moved to https://gitlab.com/vasara-bpm/vasara
+
 Getting started:
 
 * Add `/etc/hosts` alias for `localhost` as `keycloak` (for OIDC login)
